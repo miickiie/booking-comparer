@@ -126,7 +126,7 @@ namespace BookingComparer
 
         #endregion
 
-        private async void process_btn_Click(object sender, EventArgs e)
+        private void process_btn_Click(object sender, EventArgs e)
         {
             progressBar1.Maximum = 6;
             progressBar1.Step = 1;
@@ -137,7 +137,6 @@ namespace BookingComparer
             var b_allocate = LoadAllocateFromText(b.FileName);
                              
             progressBar1.Value = 1;
-
             var A_countBefore = GetBookingCount(booking_before, a_allocate);
             progressBar1.Value = 2;
             var A_countAfter = GetBookingCount(booking_after, a_allocate);
@@ -157,6 +156,8 @@ namespace BookingComparer
             using (StreamWriter file =
             new StreamWriter(Path.Combine(Directory.GetCurrentDirectory(), "BookingCount.txt"), true))
             {
+                file.WriteLine("================================================");
+                file.WriteLine(DateTime.Now);
                 file.WriteLine("================================================");
                 file.WriteLine("A Total booking before : " + A_countBefore);
                 file.WriteLine("A Total booking after : " + A_countAfter);
@@ -188,29 +189,18 @@ namespace BookingComparer
             progressBar1.Value = 6;
         }
 
-
-          
-
-           /*var TList = new List<Task>();
-           TList.Add(Task.Run(() => GetBookingCount(booking_before, A_ids)));
-           TList.Add(Task.Run(() => GetBookingCount(booking_after, A_ids)));
-           TList.Add(Task.Run(() => GetBookingCount(booking_before, B_ids)));
-           TList.Add(Task.Run(() => GetBookingCount(booking_after, B_ids)));
-
-           // Run operation in another thread
-           await Task.WhenAll(TList);*/    
-
-        private static List<HotelBookingCount> LoadHotelsFromCsv(string filePath)
+        private static Dictionary<int,int> LoadHotelsFromCsv(string filePath)
         {
             var reader = new StreamReader(File.OpenRead(filePath));
             reader.ReadLine();
-            var list = new List<HotelBookingCount>();
+            var result = new Dictionary<int, int>();
             while (!reader.EndOfStream)
             {
-                list.Add(HotelBookingCount.FromCsvLine(reader.ReadLine()));
+                var kvp = HotelBookingCount.FromCsvLine(reader.ReadLine());
+                result.Add(kvp.Key, kvp.Value);
             }
 
-            return list;
+            return result;
         }
 
         private static List<int> LoadAllocateFromText(string filePath)
@@ -226,22 +216,20 @@ namespace BookingComparer
             return list;
         }
 
-
-        private static int GetBookingCount(List<HotelBookingCount> booking, List<int> sampling_group)
+        private static int GetBookingCount(Dictionary<int,int> bookingCollection, List<int> sampling_group)
         {
             var bookingCount = 0;
-            for (int i = 0; i < booking.Count; i++)
+          
+            foreach (var hotelId in sampling_group)
             {
-                HotelBookingCount hotel_booking = booking[i];
-                foreach (var hotelId in sampling_group)
+                var count = 0;
+                if (bookingCollection.TryGetValue(hotelId, out count))
                 {
-                    if (hotel_booking.HotelId == hotelId)
-                    {
-                        Console.WriteLine("Found matched hotel id: " + hotelId);
-                        bookingCount = bookingCount + hotel_booking.BookingCount;                          
-                    }
-                }              
+                    Console.WriteLine("Found matched hotel id: " + hotelId);
+                    bookingCount = bookingCount + count;
+                }
             }
+            
             return bookingCount;
         }
     }
@@ -251,23 +239,11 @@ namespace BookingComparer
         public int HotelId { get; private set; }
         public int BookingCount { get; private set; }
 
-        public static HotelBookingCount FromCsvLine(string line)
-        {
-            if (line.IndexOf(',') > 0)
-            {
-                var split = line.Split(new[] { ',' }, 2);
-                return new HotelBookingCount
-                {
-                    HotelId = int.Parse(split[0]),
-                    BookingCount = int.Parse(split[1])
-                };
-            }
-
-            var split2 = line.Split(new[] { ',' }, 1);
-            return new HotelBookingCount
-            {
-                HotelId = int.Parse(split2[0]),
-            };
+        public static KeyValuePair<int, int> FromCsvLine(string line)
+        {         
+            var split = line.Split(new[] { ',' }, 2);
+            return new KeyValuePair<int, int>(int.Parse(split[0]), int.Parse(split[1]));
+            
         }
     }
 }

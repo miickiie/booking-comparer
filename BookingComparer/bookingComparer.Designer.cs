@@ -223,17 +223,17 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label1.Location = new System.Drawing.Point(642, 592);
+            this.label1.Location = new System.Drawing.Point(649, 592);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(116, 13);
             this.label1.TabIndex = 17;
             this.label1.Text = "Made with (♥) in Castle";
             // 
-            // bookingComparer
+            // BookingComparer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 619);
+            this.ClientSize = new System.Drawing.Size(800, 628);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.groupBox2);
@@ -244,7 +244,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
-            this.Name = "bookingComparer";
+            this.Name = "BookingComparer";
             this.Text = "Booking Comparer";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
