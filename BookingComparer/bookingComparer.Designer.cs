@@ -1,6 +1,6 @@
 ﻿namespace BookingComparer
 {
-    partial class bookingComparer
+    partial class BookingComparer
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(bookingComparer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BookingComparer));
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.csv_btn_1 = new System.Windows.Forms.Button();
             this.tbFilePath1 = new System.Windows.Forms.TextBox();
@@ -63,7 +63,7 @@
             // 
             this.csv_btn_1.Location = new System.Drawing.Point(592, 27);
             this.csv_btn_1.Name = "csv_btn_1";
-            this.csv_btn_1.Size = new System.Drawing.Size(99, 23);
+            this.csv_btn_1.Size = new System.Drawing.Size(129, 23);
             this.csv_btn_1.TabIndex = 0;
             this.csv_btn_1.Text = "Load CSV ";
             this.csv_btn_1.UseVisualStyleBackColor = true;
@@ -111,7 +111,7 @@
             // 
             this.csv_btn_2.Location = new System.Drawing.Point(592, 27);
             this.csv_btn_2.Name = "csv_btn_2";
-            this.csv_btn_2.Size = new System.Drawing.Size(100, 23);
+            this.csv_btn_2.Size = new System.Drawing.Size(129, 23);
             this.csv_btn_2.TabIndex = 6;
             this.csv_btn_2.Text = "Load CSV";
             this.csv_btn_2.UseVisualStyleBackColor = true;
@@ -121,9 +121,9 @@
             // 
             this.a_btn.Location = new System.Drawing.Point(592, 26);
             this.a_btn.Name = "a_btn";
-            this.a_btn.Size = new System.Drawing.Size(102, 23);
+            this.a_btn.Size = new System.Drawing.Size(129, 23);
             this.a_btn.TabIndex = 7;
-            this.a_btn.Text = "Load CSV for A";
+            this.a_btn.Text = "Load allocate for A";
             this.a_btn.UseVisualStyleBackColor = true;
             this.a_btn.Click += new System.EventHandler(this.a_btn_Click);
             // 
@@ -131,9 +131,9 @@
             // 
             this.b_button.Location = new System.Drawing.Point(592, 26);
             this.b_button.Name = "b_button";
-            this.b_button.Size = new System.Drawing.Size(100, 23);
+            this.b_button.Size = new System.Drawing.Size(129, 23);
             this.b_button.TabIndex = 8;
-            this.b_button.Text = "Load CSV for B";
+            this.b_button.Text = "Load allocate for B";
             this.b_button.UseVisualStyleBackColor = true;
             this.b_button.Click += new System.EventHandler(this.b_button_Click);
             // 

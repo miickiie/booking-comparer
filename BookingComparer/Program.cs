@@ -16,7 +16,7 @@ namespace BookingComparer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new bookingComparer());
+            Application.Run(new BookingComparer());
         }
     }
 }

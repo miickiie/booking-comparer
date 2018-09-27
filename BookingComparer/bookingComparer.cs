@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace BookingComparer
 {
-    public partial class bookingComparer : Form
+    public partial class BookingComparer : Form
     {
              
         private OpenFileDialog csv1 = new OpenFileDialog();
@@ -20,7 +20,7 @@ namespace BookingComparer
         private OpenFileDialog b = new OpenFileDialog();
 
         #region basic form
-        public bookingComparer()
+        public BookingComparer()
         {
             InitializeComponent();
         }
@@ -98,7 +98,7 @@ namespace BookingComparer
         private void a_btn_Click(object sender, EventArgs e)
         {
             a = new OpenFileDialog();
-            a.Filter = "CSV|*.csv";
+            a.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
             // Show the dialog and get result.
             DialogResult result = a.ShowDialog();
             if (result == DialogResult.OK)
@@ -109,7 +109,7 @@ namespace BookingComparer
         private void b_button_Click(object sender, EventArgs e)
         {
             b = new OpenFileDialog();
-            b.Filter = "CSV|*.csv";
+            b.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
             // Show the dialog and get result.
             DialogResult result = b.ShowDialog();
             if (result == DialogResult.OK)
@@ -117,6 +117,13 @@ namespace BookingComparer
                 userSelectedFilePath4 = b.FileName;
             }
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.linkLabel1.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://metabase.agoda.local/question/1315");
+        }
+
         #endregion
 
         private async void process_btn_Click(object sender, EventArgs e)
@@ -126,29 +133,26 @@ namespace BookingComparer
 
             var booking_before = LoadHotelsFromCsv(csv1.FileName);
             var booking_after = LoadHotelsFromCsv(csv2.FileName);
-            var a_group = LoadHotelsFromCsv(a.FileName);
-            var b_group = LoadHotelsFromCsv(b.FileName);
-
-            var A_ids = a_group.Select(x => x.HotelId).ToList();
-            var B_ids = b_group.Select(x => x.HotelId).ToList();
+            var a_allocate = LoadAllocateFromText(a.FileName);
+            var b_allocate = LoadAllocateFromText(b.FileName);
                              
             progressBar1.Value = 1;
 
-            var A_countBefore = GetBookingCount(booking_before, A_ids);
+            var A_countBefore = GetBookingCount(booking_before, a_allocate);
             progressBar1.Value = 2;
-            var A_countAfter = GetBookingCount(booking_after, A_ids);
+            var A_countAfter = GetBookingCount(booking_after, a_allocate);
             progressBar1.Value = 3;
-            var B_countBefore = GetBookingCount(booking_before, B_ids);
+            var B_countBefore = GetBookingCount(booking_before, b_allocate);
             progressBar1.Value = 4;
-            var B_countAfter = GetBookingCount(booking_after, B_ids);
+            var B_countAfter = GetBookingCount(booking_after, b_allocate);
             progressBar1.Value = 5;
 
             var A_diff = A_countAfter - A_countBefore;
             var B_diff = B_countAfter - B_countBefore;
-            var A_prc_diff = 100 - (A_countAfter * 100 / A_countBefore);
-            var B_prc_diff = 100 - (B_countAfter * 100 / B_countBefore);
-            A_prc_diff = A_diff > 0 ? A_prc_diff : -Math.Abs(A_prc_diff);
-            B_prc_diff = B_diff > 0 ? B_prc_diff : -Math.Abs(B_prc_diff);
+            var A_prc_diff = A_diff != 0 ? (A_countAfter * 100 / A_countBefore) : 0;
+            var B_prc_diff = B_diff != 0 ? (B_countAfter * 100 / B_countBefore) : 0;
+            A_prc_diff = A_prc_diff - 100 < 0 ? -Math.Abs(A_prc_diff) : A_prc_diff-100;
+            B_prc_diff = A_prc_diff - 100 < 0 ? -Math.Abs(B_prc_diff) : B_prc_diff-100;
 
             using (StreamWriter file =
             new StreamWriter(Path.Combine(Directory.GetCurrentDirectory(), "BookingCount.txt"), true))
@@ -208,7 +212,20 @@ namespace BookingComparer
 
             return list;
         }
-         
+
+        private static List<int> LoadAllocateFromText(string filePath)
+        {
+            var reader = new StreamReader(File.OpenRead(filePath));
+            reader.ReadLine();
+            var list = new List<int>();
+            while (!reader.EndOfStream)
+            {
+                list.Add(int.Parse(reader.ReadLine()));
+            }
+
+            return list;
+        }
+
 
         private static int GetBookingCount(List<HotelBookingCount> booking, List<int> sampling_group)
         {
@@ -225,17 +242,10 @@ namespace BookingComparer
                     }
                 }              
             }
-
             return bookingCount;
         }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            this.linkLabel1.LinkVisited = true;
-            System.Diagnostics.Process.Start("https://metabase.agoda.local/question/1315");
-        }
-      
     }
+
     public class HotelBookingCount
     {
         public int HotelId { get; private set; }
